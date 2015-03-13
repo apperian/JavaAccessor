@@ -12,6 +12,16 @@ import com.apperian.javautil.MethodTools;
 public class MethodToolsTest {
     
     // Classes used for various tests in MethodTools
+    //
+    // Function name formatting:
+    //     ClassName_ArgType1_ArgeType2_ret_ReturnType
+    //
+    // arrays get the type prefixed with ARR, multidimensional with ARRARR, etc.
+    //
+    // 
+    // example: Class Foo function takes int[], double and
+    //          returns Integer: Foo_ARRint_double_ret_Integer
+    
     class Foo {
         public Foo(){}
         
@@ -35,6 +45,22 @@ public class MethodToolsTest {
         public boolean Bar_Boolean_boolean_Integer_int_Float_float_Double_double_Long_long_ret_boolean(Boolean a, boolean b, Integer c, int d, Float e, float f, Double g, double h, Long i, long j) {
             return true;
         }
+        
+        public void Bar_ARRint_ret_void(int[] a) {
+            return;
+        }
+        
+        public void Bar_ARRARRint_ret_void(int[][] a) {
+            return;
+        }
+        
+        public void Bar_ARRInteger_ret_void(Integer[] a) {
+            return;
+        }
+        
+        public Foo[] Bar_ARRARRFoo_ret_ARRFoo(Foo[][] a) {
+            return new Foo[1];
+        }
     }
     
     private class Zoo {
@@ -52,6 +78,10 @@ public class MethodToolsTest {
         HashMap<String,String> expectedFunctionResults = new HashMap<String,String>();
         expectedFunctionResults.put("Foo_Integer_int_ret_String", "(Ljava/lang/Integer;I)Ljava/lang/String;");
         expectedFunctionResults.put("Bar_double_ret_Foo", "(D)Lcom/apperian/javautil/test/MethodToolsTest$Foo;");
+        expectedFunctionResults.put("Bar_ARRint_ret_void", "([I)V");
+        expectedFunctionResults.put("Bar_ARRARRint_ret_void", "([[I)V");
+        expectedFunctionResults.put("Bar_ARRInteger_ret_void", "([Ljava.lang.Integer;)V");
+        expectedFunctionResults.put("Bar_ARRARRFoo_ret_ARRFoo", "([[Lcom.apperian.javautil.test.MethodToolsTest$Foo;)[Lcom.apperian.javautil.test.MethodToolsTest$Foo;");
         expectedFunctionResults.put("Bar_Boolean_boolean_Integer_int_Float_float_Double_double_Long_long_ret_boolean", "(Ljava/lang/Boolean;ZLjava/lang/Integer;ILjava/lang/Float;FLjava/lang/Double;DLjava/lang/Long;J)Z");
         expectedFunctionResults.put("Zoo_int_Boolean_ret_char", "(ILjava/lang/Boolean;)C");
         
@@ -61,7 +91,7 @@ public class MethodToolsTest {
         
         for (Method method : fooMethods) {
             
-            System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
+            //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
             
             if (expectedFunctionResults.containsKey(method.getName())) {
                 assertTrue(expectedFunctionResults.get(method.getName()).equals(MethodTools.getRawMethodSignature(method)));
@@ -72,7 +102,7 @@ public class MethodToolsTest {
         
         for (Method method : barMethods) {
             
-            System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
+            //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
             
             if (expectedFunctionResults.containsKey(method.getName())) {
                 assertTrue(expectedFunctionResults.get(method.getName()).equals(MethodTools.getRawMethodSignature(method)));
@@ -83,7 +113,7 @@ public class MethodToolsTest {
         
         for (Method method : zooMethods) {
             
-            System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
+            //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
             
             if (expectedFunctionResults.containsKey(method.getName())) {
                 assertTrue(expectedFunctionResults.get(method.getName()).equals(MethodTools.getRawMethodSignature(method)));

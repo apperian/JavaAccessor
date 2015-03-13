@@ -4,6 +4,21 @@ import java.lang.reflect.Method;
 
 public class MethodTools {
     
+    public class ParameterTypeConstants {
+        public static final int BOOLEAN = 0;
+        public static final int BYTE = 1;
+        public static final int CHAR = 2;
+        public static final int DOUBLE = 3;
+        public static final int FLOAT = 4;
+        public static final int INT = 5;
+        public static final int LONG = 6;
+        public static final int OBJECT = 7;
+        public static final int SHORT = 8;
+        public static final int VOID = 9;
+        public static final int ARRAY = 10;
+    }
+    
+    
     public static String getRawMethodSignature(Method method) {
         
         Class<?>[] methodClasses = method.getParameterTypes();
@@ -54,7 +69,15 @@ public class MethodTools {
             return "V";
         }
         else {
-            return "L" + clazz.getName().replace('.', '/') + ";";
+            String className = clazz.getName();
+            //System.out.println("CLASS NAME: " + className);
+            
+            if (className.startsWith("[")) {
+                return className;
+            }
+            else {
+                return "L" + clazz.getName().replace('.', '/') + ";";
+            }
         }
     }
 }
