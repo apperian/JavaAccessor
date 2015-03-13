@@ -34,7 +34,7 @@ public class Accessor {
         }
         
         if (method == null) {
-            throw new NoSuchMethodError("Accessor.invokeMethod(): Method '" + methodName + "' not found on object '" + obj.getClass().getCanonicalName() + "'");
+            throw new NoSuchMethodException("Accessor.invokeMethod(): Method '" + methodName + "' not found on object '" + obj.getClass().getCanonicalName() + "'");
         }
         
         return invokeMethod(obj, method, args);
