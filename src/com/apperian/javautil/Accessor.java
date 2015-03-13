@@ -8,7 +8,11 @@ public class Accessor {
         System.loadLibrary("accessor");
     }
     
-    public static native Object invoke();
+    public static native Object invokeObject(Object obj, String methodName, String methodSig, Object[] args);
+    public static native int    invokeInt(Object obj, String methodName, String methodSig, Object[] args);
+//    public static native double invokeDouble(Object obj, String methodName, String methodSig, Object[] args);
+//    public static native long   invokeLong(Object obj, String methodName, String methodSig, Object[] args);
+//    public static native float  invokeFloat(Object obj, String methodName, String methodSig, Object[] args);
     
     
     public static Object invokeMethod(Object obj, String methodName, Object[] args, Class<?>... parameterTypes) throws NoSuchMethodException, SecurityException {
@@ -49,4 +53,5 @@ public class Accessor {
         
         return 5;
     }
+
 }
