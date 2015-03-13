@@ -8,6 +8,7 @@ import java.util.HashMap;
 import org.junit.Test;
 
 import com.apperian.javautil.MethodTools;
+import com.apperian.javautil.MethodTools.ParameterTypeConstants;
 
 public class MethodToolsTest {
     
@@ -120,6 +121,64 @@ public class MethodToolsTest {
             }
         }
         
+    }
+    
+    @Test
+    public void testGetMethodArgTypes_Integer_concat() {
+        
+        Class<?>[] params = new Class<?>[1];
+        params[0] = String.class;
+        Method concatMethod = null;
+        try {
+            concatMethod = String.class.getMethod("concat", params);
+        } catch (NoSuchMethodException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        int[] argTypes = MethodTools.getMethodArgTypes(concatMethod);
+        
+        assertEquals(ParameterTypeConstants.OBJECT, argTypes[0]);
+    }
+    
+    @Test
+    public void testGetMethodArgTypes_Bar_longMethod() {
+        
+        Class<?>[] params = new Class<?>[10];
+        params[0] = Boolean.class;
+        params[1] = boolean.class;
+        params[2] = Integer.class;
+        params[3] = int.class;
+        params[4] = Float.class;
+        params[5] = float.class;
+        params[6] = Double.class;
+        params[7] = double.class;
+        params[8] = Long.class;
+        params[9] = long.class;
+        Method longMethod = null;
+        try {
+            longMethod = Bar.class.getMethod("Bar_Boolean_boolean_Integer_int_Float_float_Double_double_Long_long_ret_boolean", params);
+        } catch (NoSuchMethodException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        int[] argTypes = MethodTools.getMethodArgTypes(longMethod);
+        
+        assertEquals(ParameterTypeConstants.OBJECT, argTypes[0]);
+        assertEquals(ParameterTypeConstants.BOOLEAN, argTypes[1]);
+        assertEquals(ParameterTypeConstants.OBJECT, argTypes[2]);
+        assertEquals(ParameterTypeConstants.INT, argTypes[3]);
+        assertEquals(ParameterTypeConstants.OBJECT, argTypes[4]);
+        assertEquals(ParameterTypeConstants.FLOAT, argTypes[5]);
+        assertEquals(ParameterTypeConstants.OBJECT, argTypes[6]);
+        assertEquals(ParameterTypeConstants.DOUBLE, argTypes[7]);
+        assertEquals(ParameterTypeConstants.OBJECT, argTypes[8]);
+        assertEquals(ParameterTypeConstants.LONG, argTypes[9]);
     }
 
 }
