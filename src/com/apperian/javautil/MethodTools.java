@@ -21,13 +21,13 @@ public class MethodTools {
     
     public static String getRawMethodSignature(Method method) {
         
-        Class<?>[] methodClasses = method.getParameterTypes();
+        Class<?>[] paramClasses = method.getParameterTypes();
         
         StringBuilder builder = new StringBuilder("(");
         
         // add parameter methods
-        for (Class<?> methodClass : methodClasses) {
-            builder.append(MethodTools.convertClassToRawRepresentation(methodClass));
+        for (Class<?> paramClass : paramClasses) {
+            builder.append(MethodTools.convertClassToRawRepresentation(paramClass));
         }
         
         builder.append(")");
@@ -78,6 +78,51 @@ public class MethodTools {
             else {
                 return "L" + clazz.getName().replace('.', '/') + ";";
             }
+        }
+    }
+    
+    public static int[] getMethodArgTypes(Method method) {
+        Class<?>[] paramClasses = method.getParameterTypes();
+        
+        int[] paramTypes = new int[paramClasses.length];
+        
+        for (int i = 0; i < paramTypes.length; i++) {
+            paramTypes[i] = getArgType(paramClasses[i]);
+        }
+        
+        return paramTypes;
+    }
+    
+    private static int getArgType(Class<?> clazz) {
+        if (clazz.equals(int.class)) {
+            return ParameterTypeConstants.INT;
+        }
+        else if (clazz.equals(boolean.class)) {
+            return ParameterTypeConstants.BOOLEAN;
+        }
+        else if (clazz.equals(byte.class)) {
+            return ParameterTypeConstants.BYTE;
+        }
+        else if (clazz.equals(char.class)) {
+            return ParameterTypeConstants.CHAR;
+        }
+        else if (clazz.equals(double.class)) {
+            return ParameterTypeConstants.DOUBLE;
+        }
+        else if (clazz.equals(float.class)) {
+            return ParameterTypeConstants.FLOAT;
+        }
+        else if (clazz.equals(long.class)) {
+            return ParameterTypeConstants.LONG;
+        }
+        else if (clazz.equals(short.class)) {
+            return ParameterTypeConstants.SHORT;
+        }
+        else if (clazz.equals(void.class)) {
+            return ParameterTypeConstants.VOID;
+        }
+        else {
+            return ParameterTypeConstants.OBJECT;
         }
     }
 }
