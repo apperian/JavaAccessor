@@ -2,33 +2,34 @@ package com.apperian.javautil.test;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Method;
+
 import org.junit.Test;
 
 import com.apperian.javautil.Accessor;
 
 public class InvokeTest {
     
-    class MyInt {
-        
-        public Integer getInteger() {
-            return new Integer(1);
+    public class Tester {
+        public int add(int i, int j) {
+            return i + j;
         }
-        
-        public int getInt() {
-            return 1;
-        }
-    }
-    
-    @Test
-    public void testInvokeObject() {
-        MyInt i = new MyInt();
-        assertEquals("MyInt.getInteger() should return 1", i.getInteger(), Accessor.invokeObject(i, "getInteger", "()Ljava/lang/Integer;", new Object[0]));
     }
     
     @Test
     public void testInvokeInt() {
-        MyInt i = new MyInt();
-        assertEquals("MyInt.getInt() should return 1", i.getInt(), Accessor.invokeInt(i, "getInt", "()I", new Object[0]));
+        
+        Tester test = new Tester();
+        Method addMethod = null;
+        try {
+            addMethod = Tester.class.getMethod("add", int.class, int.class);
+            Object[] args = new Object[2];
+            args[0] = 1;
+            args[1] = 2;
+
+            assertEquals(addMethod.invoke(test, args), Accessor.invokeMethod(test,addMethod,args));
+        } catch (Exception e) {}
+
     }
     
     @Test(expected=NoSuchMethodException.class)
