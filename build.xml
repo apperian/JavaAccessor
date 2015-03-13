@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="accessor" default="build" basedir=".">
+    
+  <property name="src.dir"     value="src"/>
+  <property name="jni.dir"     value="jni"/>
+  <property name="build.dir"   value="build"/>
+  <property name="classes.dir" value="${build.dir}/classes"/>
+  <property name="jar.dir"     value="${build.dir}/lib"/>
+  
+  <target name="build" depends="build-jar, build-jni"/>
+  
+  <target name="build-jar" depends="compile">
+    <javah class="com.apperian.javautil.Accessor" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}.h"/>
+    <mkdir dir="${jar.dir}"/>
+    <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
+  </target>
+  
+  <target name="compile">
+    <mkdir dir="${classes.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+  </target>
+  
+  <target name="build-jni">
+    <exec executable="make"/>
+  </target>
+  
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+  
+</project>
