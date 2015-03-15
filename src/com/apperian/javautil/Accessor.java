@@ -116,7 +116,7 @@ public class Accessor {
         return o;
     }
     
-    private long getShort(Short o) {
+    private short getShort(Short o) {
         return o;
     }
 }

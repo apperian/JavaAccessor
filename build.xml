@@ -10,7 +10,7 @@
   <target name="build" depends="build-jar, build-jni"/>
   
   <target name="build-jar" depends="compile">
-    <javah class="com.apperian.javautil.Accessor" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}.h"/>
+    <javah class="com.apperian.javautil.Accessor" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}_jni.h"/>
     <mkdir dir="${jar.dir}"/>
     <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
   </target>

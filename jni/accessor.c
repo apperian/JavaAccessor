@@ -1,25 +1,61 @@
 
 #include "jni.h"
+#include "accessor_jni.h"
 #include "accessor.h"
 #include <stdlib.h>
 
-#define APPERIAN_BOOLEAN   0
-#define APPERIAN_BYTE      1
-#define APPERIAN_CHAR      2
-#define APPERIAN_DOUBLE    3
-#define APPERIAN_FLOAT     4
-#define APPERIAN_INT       5
-#define APPERIAN_LONG      6
-#define APPERIAN_OBJECT    7
-#define APPERIAN_SHORT     8
+static prim_t PRIM = {
+    .class_name = "com/apperian/javautil/Accessor"
+};
 
-#define INVOKE(jtype,type) \
-JNIEXPORT jtype JNICALL Java_com_apperian_javautil_Accessor_invoke##type(JNIEnv *env, jclass class, jobject obj, jstring methodName, jstring methodSig, jintArray argTypes, jobjectArray args_arr)  \
+jint JNI_OnLoad(JavaVM *vm, void *reserved)
+{   JNIEnv *env;
+
+    if ((*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_6) != JNI_OK)
+    {   return JNI_ERR;
+    }
+
+    PRIM.class = (*env)->FindClass(env, PRIM.class_name);
+    if (!PRIM.class)
+    {   return JNI_ERR;
+    }
+    PRIM.class = (*env)->NewGlobalRef(env, PRIM.class);
+
+    PRIM.to_boolean = (*env)->GetMethodID(env, PRIM.class, "getBoolean", "(Ljava/lang/Boolean;)Z");
+    PRIM.to_byte    = (*env)->GetMethodID(env, PRIM.class, "getByte", "(Ljava/lang/Byte;)B");
+    PRIM.to_char    = (*env)->GetMethodID(env, PRIM.class, "getChar", "(Ljava/lang/Character;)C");
+    PRIM.to_double  = (*env)->GetMethodID(env, PRIM.class, "getDouble", "(Ljava/lang/Double;)D");
+    PRIM.to_float   = (*env)->GetMethodID(env, PRIM.class, "getFloat", "(Ljava/lang/Float;)F");
+    PRIM.to_int     = (*env)->GetMethodID(env, PRIM.class, "getInt", "(Ljava/lang/Integer;)I");
+    PRIM.to_long    = (*env)->GetMethodID(env, PRIM.class, "getLong", "(Ljava/lang/Long;)J");
+    PRIM.to_short   = (*env)->GetMethodID(env, PRIM.class, "getShort", "(Ljava/lang/Short;)S");
+
+    return JNI_VERSION_1_6;
+}
+
+
+#define  DECLARE_JTYPE(jtype,var)       jtype  var;
+#define  DECLARE_VOID(jtype,var)        /* no declaration needed  */
+#define  METHOD_CALL(type)              (*env)->Call##type##MethodA(env, obj, method_id, args);
+#define  JTYPE_CALL(type,var)           var = METHOD_CALL(type)
+#define  VOID_CALL(type,var)            METHOD_CALL(type)
+#define  JTYPE_RETURN(var)              return var;
+#define  VOID_RETURN(var)               return;
+
+#define DEFINE_METHOD(TYPE,jtype,type)                                                                     \
+JNIEXPORT jtype JNICALL Java_com_apperian_javautil_Accessor_invoke##type(                                  \
+    JNIEnv *env,                                                                                           \
+    jclass class,                                                                                          \
+    jobject obj,                                                                                           \
+    jstring methodName,                                                                                    \
+    jstring methodSig,                                                                                     \
+    jintArray argTypes,                                                                                    \
+    jobjectArray args_arr                                                                                  \
+)                                                                                                          \
 {   jclass        obj_class;                                                                               \
     jmethodID     method_id;                                                                               \
-    jmethodID     convert_id;                                                                              \
     jvalue       *args = 0;                                                                                \
-    jtype         ret;                                                                                     \
+    DECLARE_##TYPE(jtype,ret)                                                                              \
     jobject       tmp_obj;                                                                                 \
     const char   *method_name;                                                                             \
     const char*   method_sig;                                                                              \
@@ -37,68 +73,64 @@ JNIEXPORT jtype JNICALL Java_com_apperian_javautil_Accessor_invoke##type(JNIEnv 
     (*env)->ReleaseStringUTFChars(env, methodSig, method_sig);                                             \
                                                                                                            \
     if (!method_id)                                                                                        \
-        return 0;                                                                                          \
+        TYPE##_RETURN(0)                                                                                          \
                                                                                                            \
     if (num_args > 0 && !(args = calloc(num_args, sizeof(jvalue))))                                        \
-        return 0;                                                                                          \
+        TYPE##_RETURN(0)                                                                                          \
                                                                                                            \
     arg_types = (*env)->GetIntArrayElements(env, argTypes, 0);                                             \
                                                                                                            \
     for (int i = 0; i < num_args; i++)                                                                     \
     {   tmp_obj = (*env)->GetObjectArrayElement(env, args_arr, i);                                         \
-                                                                                                           \
-        switch(arg_types[i]) {                                                                             \
-        case APPERIAN_BYTE:                                                                                \
-            convert_id = (*env)->GetMethodID(env, class, "getByte", "(Ljava/lang/Byte;)B");                \
-            args[i].b = (*env)->CallStaticByteMethod(env, class, convert_id, tmp_obj);                     \
-            break;                                                                                         \
-        case APPERIAN_CHAR:                                                                                \
-            convert_id = (*env)->GetMethodID(env, class, "getChar", "(Ljava/lang/Char;)C");                \
-            args[i].c = (*env)->CallStaticCharMethod(env, class, convert_id, tmp_obj);                     \
-            break;                                                                                         \
-        case APPERIAN_DOUBLE:                                                                              \
-            convert_id = (*env)->GetMethodID(env, class, "getDouble", "(Ljava/lang/Double;)D");            \
-            args[i].d = (*env)->CallStaticDoubleMethod(env, class, convert_id, tmp_obj);                   \
-            break;                                                                                         \
-        case APPERIAN_FLOAT:                                                                               \
-            convert_id = (*env)->GetMethodID(env, class, "getFloat", "(Ljava/lang/Float;)F");              \
-            args[i].f = (*env)->CallStaticFloatMethod(env, class, convert_id, tmp_obj);                    \
-            break;                                                                                         \
-        case APPERIAN_INT:                                                                                 \
-            convert_id = (*env)->GetMethodID(env, class, "getInt", "(Ljava/lang/Integer;)I");          \
-            args[i].i = (*env)->CallStaticIntMethod(env, class, convert_id, tmp_obj);                      \
-            printf("int arg: %d", args[i].i); \
-            break;                                                                                         \
-        case APPERIAN_LONG:                                                                                \
-            convert_id = (*env)->GetMethodID(env, class, "getLong", "(Ljava/lang/Long;)J");                \
-            args[i].j = (*env)->CallStaticLongMethod(env, class, convert_id, tmp_obj);                     \
-            break;                                                                                         \
-        case APPERIAN_OBJECT:                                                                              \
-            args[i].l = (*env)->CallStaticObjectMethod(env, class, convert_id, tmp_obj);                   \
-            break;                                                                                         \
-        case APPERIAN_SHORT:                                                                               \
-            convert_id = (*env)->GetMethodID(env, class, "getShort", "(Ljava/lang/Short;)S");              \
-            args[i].s = (*env)->CallStaticShortMethod(env, class, convert_id, tmp_obj);                    \
-            break;                                                                                         \
-        }                                                                                                  \
+        get_arg(env, arg_types[i], &args[i], tmp_obj);                                                     \
     }                                                                                                      \
                                                                                                            \
-    ret = (*env)->Call##type##MethodA(env, obj, method_id, args);                                          \
+    TYPE##_CALL(type,ret)                                                                                  \
                                                                                                            \
     if (args)                                                                                              \
         free(args);                                                                                        \
                                                                                                            \
-    return ret;                                                                                            \
+    TYPE##_RETURN(ret)                                                                                     \
 }
 
-INVOKE(jobject,Object)
-INVOKE(jboolean,Boolean)
-INVOKE(jbyte,Byte)
-INVOKE(jchar,Char)
-INVOKE(jshort,Short)
-INVOKE(jint,Int)
-INVOKE(jdouble,Double)
-INVOKE(jlong,Long)
-INVOKE(jfloat,Float)
+void get_arg(JNIEnv *env, int arg_type, jvalue *arg, jobject obj)
+{
+    switch(arg_type) {
+    case APPERIAN_BYTE:
+        arg->b = (*env)->CallStaticByteMethod(env, PRIM.class, PRIM.to_byte, obj);
+        break;
+    case APPERIAN_CHAR:
+        arg->c = (*env)->CallStaticCharMethod(env, PRIM.class, PRIM.to_char, obj);
+        break;
+    case APPERIAN_DOUBLE:
+        arg->d = (*env)->CallStaticDoubleMethod(env, PRIM.class, PRIM.to_double, obj);
+        break;
+    case APPERIAN_FLOAT:
+        arg->f = (*env)->CallStaticFloatMethod(env, PRIM.class, PRIM.to_float, obj);
+        break;
+    case APPERIAN_INT:
+        arg->i = (*env)->CallStaticIntMethod(env, PRIM.class, PRIM.to_int, obj);
+        break;
+    case APPERIAN_LONG:
+        arg->j = (*env)->CallStaticLongMethod(env, PRIM.class, PRIM.to_long, obj);
+        break;
+    case APPERIAN_SHORT:
+        arg->s = (*env)->CallStaticShortMethod(env, PRIM.class, PRIM.to_short, obj);
+        break;
+    default:
+        arg->l = obj;
+    }
+}
+
+DEFINE_METHOD(VOID,void,Void)
+DEFINE_METHOD(JTYPE,jboolean,Boolean)
+DEFINE_METHOD(JTYPE,jbyte,Byte)
+DEFINE_METHOD(JTYPE,jchar,Char)
+DEFINE_METHOD(JTYPE,jdouble,Double)
+DEFINE_METHOD(JTYPE,jint,Int)
+DEFINE_METHOD(JTYPE,jlong,Long)
+DEFINE_METHOD(JTYPE,jfloat,Float)
+DEFINE_METHOD(JTYPE,jobject,Object)
+DEFINE_METHOD(JTYPE,jshort,Short)
 
 
