@@ -33,7 +33,6 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
     return JNI_VERSION_1_6;
 }
 
-
 #define  DECLARE_JTYPE(jtype,var)       jtype  var;
 #define  DECLARE_VOID(jtype,var)        /* no declaration needed  */
 #define  METHOD_CALL(type)              (*env)->Call##type##MethodA(env, obj, method_id, args);
@@ -73,10 +72,10 @@ JNIEXPORT jtype JNICALL Java_com_apperian_javautil_Accessor_invoke##type(       
     (*env)->ReleaseStringUTFChars(env, methodSig, method_sig);                                             \
                                                                                                            \
     if (!method_id)                                                                                        \
-        TYPE##_RETURN(0)                                                                                          \
+        TYPE##_RETURN(0)                                                                                   \
                                                                                                            \
     if (num_args > 0 && !(args = calloc(num_args, sizeof(jvalue))))                                        \
-        TYPE##_RETURN(0)                                                                                          \
+        TYPE##_RETURN(0)                                                                                   \
                                                                                                            \
     arg_types = (*env)->GetIntArrayElements(env, argTypes, 0);                                             \
                                                                                                            \

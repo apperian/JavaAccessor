@@ -43,11 +43,11 @@ public class Methods {
             String className = cls.getName();
             
             if (className.startsWith("[")) {
-                rawName.append(className);
+                rawName.append(className.replace('.', '/'));
             }
             else {
                 rawName.append("L");
-                rawName.append(cls.getName().replace('.', '/'));
+                rawName.append(className.replace('.', '/'));
                 rawName.append(";");
             }
         } else {

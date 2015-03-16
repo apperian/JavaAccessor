@@ -76,20 +76,11 @@ public class AccessorTest {
     
     @Test(expected=NoSuchMethodException.class)
     public void testInvokeMethodNameOnly_negative() throws NoSuchMethodException, UnsupportedTypeException {
-        
-        Integer i = new Integer(5);
-        Object[] args = new Object[0];
-        
-        Accessor.invokeMethod(i, "not_a_function", args);
+        Accessor.invokeMethod(new Object(), "not_a_function", new Object[0]);
     }
     
     @Test(expected=NoSuchMethodException.class)
     public void testInvokeMethodNameWithParamTypes_negative() throws NoSuchMethodException, SecurityException, UnsupportedTypeException {
-        
-        Integer i = new Integer(5);
-        Object[] args = new Object[0];
-        Class<?>[] argTypes = new Class<?>[0];
-        
-        Accessor.invokeMethod(i, "not_a_function", args, argTypes);
+        Accessor.invokeMethod(new Object(), "not_a_function", new Object[0], new Class<?>[0]);
     }
 }

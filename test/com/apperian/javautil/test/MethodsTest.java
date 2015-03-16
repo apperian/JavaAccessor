@@ -12,163 +12,117 @@ import com.apperian.javautil.Primitives;
 
 public class MethodsTest {
     
-    // Classes used for various tests in Methods
-    //
-    // Function name formatting:
-    //     ClassName_ArgType1_ArgeType2_ret_ReturnType
-    //
-    // arrays get the type prefixed with ARR, multidimensional with ARRARR, etc.
-    //
-    // 
-    // example: Class Foo function takes int[], double and
-    //          returns Integer: Foo_ARRint_double_ret_Integer
-    
-    class Foo {
-        public Foo(){}
-        
-        public String Foo_Integer_int_ret_String(Integer a, int b) {
-            return "Worked!";
-        }
-        
-    }
-    
-    class Bar {
-        public Bar(){}
-        
-        public Foo Bar_double_ret_Foo(double a) {
-            return new Foo();
-        }
-        
-        public Zoo Bar_ret_Zoo() {
-            return new Zoo();
-        }
-        
-        public boolean Bar_Boolean_boolean_Integer_int_Float_float_Double_double_Long_long_ret_boolean(Boolean a, boolean b, Integer c, int d, Float e, float f, Double g, double h, Long i, long j) {
-            return true;
-        }
-        
-        public void Bar_ARRint_ret_void(int[] a) {
-            return;
-        }
-        
-        public void Bar_ARRARRint_ret_void(int[][] a) {
-            return;
-        }
-        
-        public void Bar_ARRInteger_ret_void(Integer[] a) {
-            return;
-        }
-        
-        public Foo[] Bar_ARRARRFoo_ret_ARRFoo(Foo[][] a) {
-            return new Foo[1];
-        }
-    }
-    
-    private class Zoo {
-        Zoo() {}
-        
-        public char Zoo_int_Boolean_ret_char(int a, Boolean b) {
-            return 'a';
-        }
-    }
-    
-    
     @Test
-    public void testRawSig() {
+    public void testReturnSig() throws NoSuchMethodException, SecurityException {
+        Method method; 
+        method = Target.class.getMethod("returnBoolean");
+        assertEquals("()Z",Methods.getMethodSignature(method));
         
+        method = Target.class.getMethod("returnByte");
+        assertEquals("()B",Methods.getMethodSignature(method));
         
-        HashMap<String,String> expectedFunctionResults = new HashMap<String,String>();
-        expectedFunctionResults.put("Foo_Integer_int_ret_String", "(Ljava/lang/Integer;I)Ljava/lang/String;");
-        expectedFunctionResults.put("Bar_double_ret_Foo", "(D)Lcom/apperian/javautil/test/MethodToolsTest$Foo;");
-        expectedFunctionResults.put("Bar_ARRint_ret_void", "([I)V");
-        expectedFunctionResults.put("Bar_ARRARRint_ret_void", "([[I)V");
-        expectedFunctionResults.put("Bar_ARRInteger_ret_void", "([Ljava.lang.Integer;)V");
-        expectedFunctionResults.put("Bar_ARRARRFoo_ret_ARRFoo", "([[Lcom.apperian.javautil.test.MethodToolsTest$Foo;)[Lcom.apperian.javautil.test.MethodToolsTest$Foo;");
-        expectedFunctionResults.put("Bar_Boolean_boolean_Integer_int_Float_float_Double_double_Long_long_ret_boolean", "(Ljava/lang/Boolean;ZLjava/lang/Integer;ILjava/lang/Float;FLjava/lang/Double;DLjava/lang/Long;J)Z");
-        expectedFunctionResults.put("Zoo_int_Boolean_ret_char", "(ILjava/lang/Boolean;)C");
+        method = Target.class.getMethod("returnChar");
+        assertEquals("()C",Methods.getMethodSignature(method));
         
+        method = Target.class.getMethod("returnDouble");
+        assertEquals("()D",Methods.getMethodSignature(method));
         
-        // Iterate through each method on the object and ensure that the generated method signature matches what is expected
-        Method[] fooMethods = Foo.class.getMethods();
+        method = Target.class.getMethod("returnFloat");
+        assertEquals("()F",Methods.getMethodSignature(method));
         
-        for (Method method : fooMethods) {
-            
-            //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
-            
-            if (expectedFunctionResults.containsKey(method.getName())) {
-                assertTrue(expectedFunctionResults.get(method.getName()).equals(Methods.getMethodSignature(method)));
-            }
-        }
+        method = Target.class.getMethod("returnInt");
+        assertEquals("()I",Methods.getMethodSignature(method));
         
-        Method[] barMethods = Bar.class.getMethods();
+        method = Target.class.getMethod("returnLong");
+        assertEquals("()J",Methods.getMethodSignature(method));
         
-        for (Method method : barMethods) {
-            
-            //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
-            
-            if (expectedFunctionResults.containsKey(method.getName())) {
-                assertTrue(expectedFunctionResults.get(method.getName()).equals(Methods.getMethodSignature(method)));
-            }
-        }
+        method = Target.class.getMethod("returnObject");
+        assertEquals("()Lcom/apperian/javautil/test/Target;",Methods.getMethodSignature(method));
         
-        Method[] zooMethods = Zoo.class.getMethods();
+        method = Target.class.getMethod("returnPrimitiveArray");
+        assertEquals("()[I",Methods.getMethodSignature(method));
         
-        for (Method method : zooMethods) {
-            
-            //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
-            
-            if (expectedFunctionResults.containsKey(method.getName())) {
-                assertTrue(expectedFunctionResults.get(method.getName()).equals(Methods.getMethodSignature(method)));
-            }
-        }
+        method = Target.class.getMethod("returnObjectArray");
+        assertEquals("()[Lcom/apperian/javautil/test/Target;",Methods.getMethodSignature(method));
         
+        method = Target.class.getMethod("returnShort");
+        assertEquals("()S",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("returnVoid");
+        assertEquals("()V",Methods.getMethodSignature(method));
     }
     
     @Test
-    public void testGetMethodArgTypes_Integer_concat() {
+    public void testArgumentSig() throws NoSuchMethodException, SecurityException {
+        Method method; 
+        method = Target.class.getMethod("booleanVoid",boolean.class);
+        assertEquals("(Z)V",Methods.getMethodSignature(method));
         
-        Class<?>[] params = new Class<?>[1];
-        params[0] = String.class;
-        Method concatMethod = null;
-        try {
-            concatMethod = String.class.getMethod("concat", params);
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        int[] argTypes = Methods.getArgTypes(concatMethod);
+        method = Target.class.getMethod("byteVoid",byte.class);
+        assertEquals("(B)V",Methods.getMethodSignature(method));
         
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[0]);
+        method = Target.class.getMethod("charVoid",char.class);
+        assertEquals("(C)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("doubleVoid",double.class);
+        assertEquals("(D)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("floatVoid",float.class);
+        assertEquals("(F)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("intVoid",int.class);
+        assertEquals("(I)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("longVoid",long.class);
+        assertEquals("(J)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("objectVoid",Target.class);
+        assertEquals("(Lcom/apperian/javautil/test/Target;)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("primitiveArrayVoid",int[].class);
+        assertEquals("([I)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("objectArrayVoid",Target[].class);
+        assertEquals("([Lcom/apperian/javautil/test/Target;)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("shortVoid",short.class);
+        assertEquals("(S)V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("voidVoid");
+        assertEquals("()V",Methods.getMethodSignature(method));
+        
+        method = Target.class.getMethod("allArgsVoid",
+                boolean.class,
+                byte.class,
+                char.class,
+                double.class,
+                float.class,
+                int.class,
+                long.class,
+                Target.class,
+                short.class,
+                int[].class,
+                Target[].class);
+        assertEquals("(ZBCDFIJLcom/apperian/javautil/test/Target;S[I[Lcom/apperian/javautil/test/Target;)V",Methods.getMethodSignature(method));
     }
     
     @Test
-    public void testGetMethodArgTypes_Bar_longMethod() {
-        
-        Class<?>[] params = new Class<?>[10];
-        params[0] = Boolean.class;
-        params[1] = boolean.class;
-        params[2] = Integer.class;
-        params[3] = int.class;
-        params[4] = Float.class;
-        params[5] = float.class;
-        params[6] = Double.class;
-        params[7] = double.class;
-        params[8] = Long.class;
-        params[9] = long.class;
-        Method longMethod = null;
-        try {
-            longMethod = Bar.class.getMethod("Bar_Boolean_boolean_Integer_int_Float_float_Double_double_Long_long_ret_boolean", params);
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        int[] argTypes = Methods.getArgTypes(longMethod);
+    public void testArgumentTypes() throws NoSuchMethodException, SecurityException {
+        Method method;
+        method = Target.class.getMethod("allArgsVoid",
+                boolean.class,
+                byte.class,
+                char.class,
+                double.class,
+                float.class,
+                int.class,
+                long.class,
+                Target.class,
+                short.class,
+                int[].class,
+                Target[].class);
+
+        int[] argTypes = Methods.getArgTypes(method);
         
         assertEquals(Primitives.TypeOffset.OBJECT, argTypes[0]);
         assertEquals(Primitives.TypeOffset.BOOLEAN, argTypes[1]);
@@ -181,5 +135,4 @@ public class MethodsTest {
         assertEquals(Primitives.TypeOffset.OBJECT, argTypes[8]);
         assertEquals(Primitives.TypeOffset.LONG, argTypes[9]);
     }
-
 }

@@ -19,7 +19,6 @@ public class Accessor {
     private static native short    invokeShort(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
     private static native void     invokeVoid(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
     
-    
     public static Object invokeMethod(Object obj, String methodName, Object[] args, Class<?>... parameterTypes) 
             throws NoSuchMethodException, SecurityException, UnsupportedTypeException 
     {
