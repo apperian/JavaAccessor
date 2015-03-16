@@ -8,28 +8,29 @@ public class Accessor {
         System.loadLibrary("accessor");
     }
     
-    private static native Object   invokeObject(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
     private static native boolean  invokeBoolean(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
     private static native byte     invokeByte(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
     private static native char     invokeChar(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
-    public static native double    invokeDouble(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
+    private static native double   invokeDouble(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
     private static native int      invokeInt(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
-    public static native float     invokeFloat(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
-    public static native long      invokeLong(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
+    private static native float    invokeFloat(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
+    private static native long     invokeLong(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
+    private static native Object   invokeObject(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
     private static native short    invokeShort(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
+    private static native void     invokeVoid(Object obj, String methodName, String methodSig, int[] argTypes, Object[] args);
     
     
-    public static Object invokeMethod(Object obj, String methodName, Object[] args, Class<?>... parameterTypes) throws NoSuchMethodException, SecurityException {
-        
+    public static Object invokeMethod(Object obj, String methodName, Object[] args, Class<?>... parameterTypes) 
+            throws NoSuchMethodException, SecurityException, UnsupportedTypeException 
+    {
         Method method = obj.getClass().getMethod(methodName, parameterTypes);
-        
         return invokeMethod(obj, method, args);
     }
     
-    public static Object invokeMethod(Object obj, String methodName, Object[] args) throws NoSuchMethodException {
-        
+    public static Object invokeMethod(Object obj, String methodName, Object[] args) 
+            throws NoSuchMethodException, UnsupportedTypeException 
+    {
         Method[] methods = obj.getClass().getMethods();
-        
         Method method = null;
         
         for (Method m : methods) {
@@ -44,79 +45,40 @@ public class Accessor {
         if (method == null) {
             throw new NoSuchMethodException("Accessor.invokeMethod(): Method '" + methodName + "' not found on object '" + obj.getClass().getCanonicalName() + "'");
         }
-        
         return invokeMethod(obj, method, args);
     }
     
-    public static Object invokeMethod(Object obj, Method method, Object[] args) {
+    public static Object invokeMethod(Object obj, Method method, Object[] args) 
+            throws UnsupportedTypeException 
+    {
+        String methodSignature = Methods.getMethodSignature(method);
+        int[] methodArgTypes = Methods.getArgTypes(method);
+        Class<?> cls = method.getReturnType();
         
-        String methodSignature = MethodTools.getRawMethodSignature(method);
-        
-        int[] methodArgTypes = MethodTools.getMethodArgTypes(method);
-        
-        Class<?> clazz = method.getReturnType();
-        
-        if (clazz.equals(int.class)) {
-            return invokeInt(obj, method.getName(), methodSignature, methodArgTypes, args);
-        }
-        else if (clazz.equals(boolean.class)) {
+        switch(Primitives.getTypeOffset(cls)) {
+        case Primitives.TypeOffset.BOOLEAN:
             return invokeBoolean(obj, method.getName(), methodSignature, methodArgTypes, args);
-        }
-        else if (clazz.equals(byte.class)) {
+        case Primitives.TypeOffset.BYTE:
             return invokeByte(obj, method.getName(), methodSignature, methodArgTypes, args);
-        }
-        else if (clazz.equals(char.class)) {
+        case Primitives.TypeOffset.CHAR:
             return invokeChar(obj, method.getName(), methodSignature, methodArgTypes, args);
-        }
-        else if (clazz.equals(double.class)) {
+        case Primitives.TypeOffset.DOUBLE:
             return invokeDouble(obj, method.getName(), methodSignature, methodArgTypes, args);
-        }
-        else if (clazz.equals(float.class)) {
+        case Primitives.TypeOffset.FLOAT:
             return invokeFloat(obj, method.getName(), methodSignature, methodArgTypes, args);
-        }
-        else if (clazz.equals(long.class)) {
+        case Primitives.TypeOffset.INT:
+            return invokeInt(obj, method.getName(), methodSignature, methodArgTypes, args);
+        case Primitives.TypeOffset.LONG:
             return invokeLong(obj, method.getName(), methodSignature, methodArgTypes, args);
-        }
-        else if (clazz.equals(short.class)) {
-            return invokeShort(obj, method.getName(), methodSignature, methodArgTypes, args);
-        }
-//        else if (clazz.equals(void.class)) {
-//            return invokeVoid(obj, method.getName(), methodSignature, methodArgTypes, args);
-//        }
-        else {
+        case Primitives.TypeOffset.OBJECT:
             return invokeObject(obj, method.getName(), methodSignature, methodArgTypes, args);
+        case Primitives.TypeOffset.SHORT:
+            return invokeShort(obj, method.getName(), methodSignature, methodArgTypes, args);
+        case Primitives.TypeOffset.VOID:
+            invokeVoid(obj, method.getName(), methodSignature, methodArgTypes, args);
+            return null;
+        default:
+            throw new UnsupportedTypeException(method,cls);
         }
-    }
-    
-    private boolean getBoolean(Boolean o) {
-        return o;
-    }
-    
-    private byte getByte(Byte o) {
-        return o;
-    }
-    
-    private char getChar(Character o) {
-        return o;
-    }
-    
-    private double getDouble(Double o) {
-        return o;
-    }
-    
-    private int getInt(Integer o) {
-        return o;
-    }
-    
-    private float getFloat(Float o) {
-        return o;
-    }
-    
-    private long getLong(Long o) {
-        return o;
-    }
-    
-    private short getShort(Short o) {
-        return o;
     }
 }

@@ -7,12 +7,12 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import com.apperian.javautil.MethodTools;
-import com.apperian.javautil.MethodTools.ParameterTypeConstants;
+import com.apperian.javautil.Methods;
+import com.apperian.javautil.Primitives;
 
-public class MethodToolsTest {
+public class MethodsTest {
     
-    // Classes used for various tests in MethodTools
+    // Classes used for various tests in Methods
     //
     // Function name formatting:
     //     ClassName_ArgType1_ArgeType2_ret_ReturnType
@@ -71,7 +71,8 @@ public class MethodToolsTest {
             return 'a';
         }
     }
-
+    
+    
     @Test
     public void testRawSig() {
         
@@ -95,7 +96,7 @@ public class MethodToolsTest {
             //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
             
             if (expectedFunctionResults.containsKey(method.getName())) {
-                assertTrue(expectedFunctionResults.get(method.getName()).equals(MethodTools.getRawMethodSignature(method)));
+                assertTrue(expectedFunctionResults.get(method.getName()).equals(Methods.getMethodSignature(method)));
             }
         }
         
@@ -106,7 +107,7 @@ public class MethodToolsTest {
             //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
             
             if (expectedFunctionResults.containsKey(method.getName())) {
-                assertTrue(expectedFunctionResults.get(method.getName()).equals(MethodTools.getRawMethodSignature(method)));
+                assertTrue(expectedFunctionResults.get(method.getName()).equals(Methods.getMethodSignature(method)));
             }
         }
         
@@ -117,7 +118,7 @@ public class MethodToolsTest {
             //System.out.println(method.getName() + ": " + MethodTools.getRawMethodSignature(method));
             
             if (expectedFunctionResults.containsKey(method.getName())) {
-                assertTrue(expectedFunctionResults.get(method.getName()).equals(MethodTools.getRawMethodSignature(method)));
+                assertTrue(expectedFunctionResults.get(method.getName()).equals(Methods.getMethodSignature(method)));
             }
         }
         
@@ -138,9 +139,9 @@ public class MethodToolsTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        int[] argTypes = MethodTools.getMethodArgTypes(concatMethod);
+        int[] argTypes = Methods.getArgTypes(concatMethod);
         
-        assertEquals(ParameterTypeConstants.OBJECT, argTypes[0]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[0]);
     }
     
     @Test
@@ -167,18 +168,18 @@ public class MethodToolsTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        int[] argTypes = MethodTools.getMethodArgTypes(longMethod);
+        int[] argTypes = Methods.getArgTypes(longMethod);
         
-        assertEquals(ParameterTypeConstants.OBJECT, argTypes[0]);
-        assertEquals(ParameterTypeConstants.BOOLEAN, argTypes[1]);
-        assertEquals(ParameterTypeConstants.OBJECT, argTypes[2]);
-        assertEquals(ParameterTypeConstants.INT, argTypes[3]);
-        assertEquals(ParameterTypeConstants.OBJECT, argTypes[4]);
-        assertEquals(ParameterTypeConstants.FLOAT, argTypes[5]);
-        assertEquals(ParameterTypeConstants.OBJECT, argTypes[6]);
-        assertEquals(ParameterTypeConstants.DOUBLE, argTypes[7]);
-        assertEquals(ParameterTypeConstants.OBJECT, argTypes[8]);
-        assertEquals(ParameterTypeConstants.LONG, argTypes[9]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[0]);
+        assertEquals(Primitives.TypeOffset.BOOLEAN, argTypes[1]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[2]);
+        assertEquals(Primitives.TypeOffset.INT, argTypes[3]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[4]);
+        assertEquals(Primitives.TypeOffset.FLOAT, argTypes[5]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[6]);
+        assertEquals(Primitives.TypeOffset.DOUBLE, argTypes[7]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[8]);
+        assertEquals(Primitives.TypeOffset.LONG, argTypes[9]);
     }
 
 }

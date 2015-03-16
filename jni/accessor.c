@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 static prim_t PRIM = {
-    .class_name = "com/apperian/javautil/Accessor"
+    .class_name = "com/apperian/javautil/Primitives"
 };
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved)
