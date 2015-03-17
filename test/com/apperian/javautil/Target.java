@@ -1,4 +1,4 @@
-package com.apperian.javautil.test;
+package com.apperian.javautil;
 
 public class Target {
     

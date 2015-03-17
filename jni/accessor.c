@@ -41,7 +41,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
 #define  VOID_RETURN(var)               return
 
 #define DEFINE_METHOD(TYPE,jtype,type)                                                                     \
-JNIEXPORT jtype JNICALL Java_com_apperian_javautil_Accessor_invoke##type(                                  \
+JNIEXPORT jtype JNICALL Java_com_apperian_javautil_AccessorNative_invoke##type(                            \
     JNIEnv *env,                                                                                           \
     jclass class,                                                                                          \
     jobject obj,                                                                                           \

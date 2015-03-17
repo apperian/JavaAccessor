@@ -6,11 +6,12 @@
   <property name="build.dir"   value="build"/>
   <property name="classes.dir" value="${build.dir}/classes"/>
   <property name="jar.dir"     value="${build.dir}/lib"/>
+  <property name="doc.dir"     value="${build.dir}/doc"/>
   
-  <target name="build" depends="build-jar, build-jni"/>
+  <target name="build" depends="build-jar, build-jni, javadoc"/>
   
   <target name="build-jar" depends="compile">
-    <javah class="com.apperian.javautil.Accessor" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}_jni.h"/>
+    <javah class="com.apperian.javautil.AccessorNative" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}_jni.h"/>
     <mkdir dir="${jar.dir}"/>
     <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
   </target>
@@ -22,6 +23,14 @@
   
   <target name="build-jni">
     <exec executable="make"/>
+  </target>
+  
+  <target name="javadoc">
+      <javadoc packagenames="com.apperian.javautil.*" sourcepath="${src.dir}" destdir="${doc.dir}" windowtitle="JavaAccessor" Package="true">
+          <bottom>
+              Copyright (C) 2015 by Apperian.  All rights reserved.
+          </bottom>
+      </javadoc>
   </target>
   
   <target name="clean">

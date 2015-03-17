@@ -1,4 +1,4 @@
-package com.apperian.javautil.test;
+package com.apperian.javautil;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import org.junit.Test;
 
 import com.apperian.javautil.Methods;
-import com.apperian.javautil.Primitives;
+import com.apperian.javautil.Primitives.NativeType;
 
 public class MethodsTest {
     
@@ -16,84 +16,84 @@ public class MethodsTest {
     public void testReturnSig() throws NoSuchMethodException, SecurityException {
         Method method; 
         method = Target.class.getMethod("returnBoolean");
-        assertEquals("()Z",Methods.getMethodSignature(method));
+        assertEquals("()Z",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnByte");
-        assertEquals("()B",Methods.getMethodSignature(method));
+        assertEquals("()B",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnChar");
-        assertEquals("()C",Methods.getMethodSignature(method));
+        assertEquals("()C",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnDouble");
-        assertEquals("()D",Methods.getMethodSignature(method));
+        assertEquals("()D",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnFloat");
-        assertEquals("()F",Methods.getMethodSignature(method));
+        assertEquals("()F",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnInt");
-        assertEquals("()I",Methods.getMethodSignature(method));
+        assertEquals("()I",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnLong");
-        assertEquals("()J",Methods.getMethodSignature(method));
+        assertEquals("()J",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnObject");
-        assertEquals("()Lcom/apperian/javautil/test/Target;",Methods.getMethodSignature(method));
+        assertEquals("()Lcom/apperian/javautil/Target;",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnPrimitiveArray");
-        assertEquals("()[I",Methods.getMethodSignature(method));
+        assertEquals("()[I",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnObjectArray");
-        assertEquals("()[Lcom/apperian/javautil/test/Target;",Methods.getMethodSignature(method));
+        assertEquals("()[Lcom/apperian/javautil/Target;",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnShort");
-        assertEquals("()S",Methods.getMethodSignature(method));
+        assertEquals("()S",Methods.getSignature(method));
         
         method = Target.class.getMethod("returnVoid");
-        assertEquals("()V",Methods.getMethodSignature(method));
+        assertEquals("()V",Methods.getSignature(method));
     }
     
     @Test
     public void testArgumentSig() throws NoSuchMethodException, SecurityException {
         Method method; 
         method = Target.class.getMethod("booleanVoid",boolean.class);
-        assertEquals("(Z)V",Methods.getMethodSignature(method));
+        assertEquals("(Z)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("byteVoid",byte.class);
-        assertEquals("(B)V",Methods.getMethodSignature(method));
+        assertEquals("(B)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("charVoid",char.class);
-        assertEquals("(C)V",Methods.getMethodSignature(method));
+        assertEquals("(C)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("doubleVoid",double.class);
-        assertEquals("(D)V",Methods.getMethodSignature(method));
+        assertEquals("(D)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("floatVoid",float.class);
-        assertEquals("(F)V",Methods.getMethodSignature(method));
+        assertEquals("(F)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("intVoid",int.class);
-        assertEquals("(I)V",Methods.getMethodSignature(method));
+        assertEquals("(I)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("longVoid",long.class);
-        assertEquals("(J)V",Methods.getMethodSignature(method));
+        assertEquals("(J)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("objectVoid",Target.class);
-        assertEquals("(Lcom/apperian/javautil/test/Target;)V",Methods.getMethodSignature(method));
+        assertEquals("(Lcom/apperian/javautil/Target;)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("primitiveArrayVoid",int[].class);
-        assertEquals("([I)V",Methods.getMethodSignature(method));
+        assertEquals("([I)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("objectArrayVoid",Target[].class);
-        assertEquals("([Lcom/apperian/javautil/test/Target;)V",Methods.getMethodSignature(method));
+        assertEquals("([Lcom/apperian/javautil/Target;)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("shortVoid",short.class);
-        assertEquals("(S)V",Methods.getMethodSignature(method));
+        assertEquals("(S)V",Methods.getSignature(method));
         
         method = Target.class.getMethod("voidVoid");
-        assertEquals("()V",Methods.getMethodSignature(method));
+        assertEquals("()V",Methods.getSignature(method));
         
         method = Target.class.getMethod("allArgsVoid", boolean.class, byte.class, char.class, double.class, float.class, int.class,
                 long.class, Target.class, short.class, int[].class, Target[].class);
-        assertEquals("(ZBCDFIJLcom/apperian/javautil/test/Target;S[I[Lcom/apperian/javautil/test/Target;)V",Methods.getMethodSignature(method));
+        assertEquals("(ZBCDFIJLcom/apperian/javautil/Target;S[I[Lcom/apperian/javautil/Target;)V",Methods.getSignature(method));
     }
     
     @Test
@@ -104,16 +104,16 @@ public class MethodsTest {
 
         int[] argTypes = Methods.getArgTypes(method);
         
-        assertEquals(Primitives.TypeOffset.BOOLEAN, argTypes[0]);
-        assertEquals(Primitives.TypeOffset.BYTE, argTypes[1]);
-        assertEquals(Primitives.TypeOffset.CHAR, argTypes[2]);
-        assertEquals(Primitives.TypeOffset.DOUBLE, argTypes[3]);
-        assertEquals(Primitives.TypeOffset.FLOAT, argTypes[4]);
-        assertEquals(Primitives.TypeOffset.INT, argTypes[5]);
-        assertEquals(Primitives.TypeOffset.LONG, argTypes[6]);
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[7]);
-        assertEquals(Primitives.TypeOffset.SHORT, argTypes[8]);
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[9]);
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[10]);
+        assertEquals(NativeType.BOOLEAN, argTypes[0]);
+        assertEquals(NativeType.BYTE, argTypes[1]);
+        assertEquals(NativeType.CHAR, argTypes[2]);
+        assertEquals(NativeType.DOUBLE, argTypes[3]);
+        assertEquals(NativeType.FLOAT, argTypes[4]);
+        assertEquals(NativeType.INT, argTypes[5]);
+        assertEquals(NativeType.LONG, argTypes[6]);
+        assertEquals(NativeType.OBJECT, argTypes[7]);
+        assertEquals(NativeType.SHORT, argTypes[8]);
+        assertEquals(NativeType.OBJECT, argTypes[9]);
+        assertEquals(NativeType.OBJECT, argTypes[10]);
     }
 }
