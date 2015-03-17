@@ -33,13 +33,12 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
     return JNI_VERSION_1_6;
 }
 
-#define  DECLARE_JTYPE(jtype,var)       jtype  var;
+#define  DECLARE_JTYPE(jtype,var)       jtype  var
 #define  DECLARE_VOID(jtype,var)        /* no declaration needed  */
-#define  METHOD_CALL(type)              (*env)->Call##type##MethodA(env, obj, method_id, args);
-#define  JTYPE_CALL(type,var)           var = METHOD_CALL(type)
-#define  VOID_CALL(type,var)            METHOD_CALL(type)
-#define  JTYPE_RETURN(var)              return var;
-#define  VOID_RETURN(var)               return;
+#define  JTYPE_CALL(type,var,stmt)      var = stmt
+#define  VOID_CALL(type,var,stmt)       stmt
+#define  JTYPE_RETURN(var)              return var
+#define  VOID_RETURN(var)               return
 
 #define DEFINE_METHOD(TYPE,jtype,type)                                                                     \
 JNIEXPORT jtype JNICALL Java_com_apperian_javautil_Accessor_invoke##type(                                  \
@@ -47,49 +46,60 @@ JNIEXPORT jtype JNICALL Java_com_apperian_javautil_Accessor_invoke##type(       
     jclass class,                                                                                          \
     jobject obj,                                                                                           \
     jstring methodName,                                                                                    \
+    jboolean isStatic,                                                                                     \
     jstring methodSig,                                                                                     \
     jintArray argTypes,                                                                                    \
-    jobjectArray args_arr                                                                                  \
+    jobjectArray argsArr                                                                                   \
 )                                                                                                          \
 {   jclass        obj_class;                                                                               \
     jmethodID     method_id;                                                                               \
     jvalue       *args = 0;                                                                                \
-    DECLARE_##TYPE(jtype,ret)                                                                              \
+    DECLARE_##TYPE(jtype,ret);                                                                             \
     jobject       tmp_obj;                                                                                 \
     const char   *method_name;                                                                             \
     const char*   method_sig;                                                                              \
     int          *arg_types;                                                                               \
     int           num_args;                                                                                \
                                                                                                            \
-    obj_class   = (*env)->GetObjectClass(env, obj);                                                        \
+    if (isStatic)                                                                                          \
+        obj_class = obj;                                                                                   \
+    else                                                                                                   \
+        obj_class   = (*env)->GetObjectClass(env, obj);                                                    \
+                                                                                                           \
     method_name = (*env)->GetStringUTFChars(env, methodName, 0);                                           \
     method_sig  = (*env)->GetStringUTFChars(env, methodSig, 0);                                            \
-    num_args    = (*env)->GetArrayLength(env, args_arr);                                                   \
+    num_args    = (*env)->GetArrayLength(env, argsArr);                                                    \
                                                                                                            \
-    method_id = (*env)->GetMethodID(env, obj_class, method_name, method_sig);                              \
+    if (isStatic)                                                                                          \
+        method_id = (*env)->GetStaticMethodID(env, obj_class, method_name, method_sig);                    \
+    else                                                                                                   \
+        method_id = (*env)->GetMethodID(env, obj_class, method_name, method_sig);                          \
                                                                                                            \
     (*env)->ReleaseStringUTFChars(env, methodName, method_name);                                           \
     (*env)->ReleaseStringUTFChars(env, methodSig, method_sig);                                             \
                                                                                                            \
     if (!method_id)                                                                                        \
-        TYPE##_RETURN(0)                                                                                   \
+        TYPE##_RETURN(0);                                                                                  \
                                                                                                            \
     if (num_args > 0 && !(args = calloc(num_args, sizeof(jvalue))))                                        \
-        TYPE##_RETURN(0)                                                                                   \
+        TYPE##_RETURN(0);                                                                                  \
                                                                                                            \
     arg_types = (*env)->GetIntArrayElements(env, argTypes, 0);                                             \
                                                                                                            \
     for (int i = 0; i < num_args; i++)                                                                     \
-    {   tmp_obj = (*env)->GetObjectArrayElement(env, args_arr, i);                                         \
+    {   tmp_obj = (*env)->GetObjectArrayElement(env, argsArr, i);                                          \
         get_arg(env, arg_types[i], &args[i], tmp_obj);                                                     \
     }                                                                                                      \
                                                                                                            \
-    TYPE##_CALL(type,ret)                                                                                  \
+    if (isStatic)                                                                                          \
+        TYPE##_CALL(type,ret,(*env)->CallStatic##type##MethodA(env, obj, method_id, args));                \
+    else                                                                                                   \
+        TYPE##_CALL(type,ret,(*env)->Call##type##MethodA(env, obj, method_id, args));                      \
                                                                                                            \
     if (args)                                                                                              \
         free(args);                                                                                        \
                                                                                                            \
-    TYPE##_RETURN(ret)                                                                                     \
+    TYPE##_RETURN(ret);                                                                                    \
 }
 
 void get_arg(JNIEnv *env, int arg_type, jvalue *arg, jobject obj)
@@ -121,7 +131,6 @@ void get_arg(JNIEnv *env, int arg_type, jvalue *arg, jobject obj)
     }
 }
 
-DEFINE_METHOD(VOID,void,Void)
 DEFINE_METHOD(JTYPE,jboolean,Boolean)
 DEFINE_METHOD(JTYPE,jbyte,Byte)
 DEFINE_METHOD(JTYPE,jchar,Char)
@@ -131,5 +140,6 @@ DEFINE_METHOD(JTYPE,jlong,Long)
 DEFINE_METHOD(JTYPE,jfloat,Float)
 DEFINE_METHOD(JTYPE,jobject,Object)
 DEFINE_METHOD(JTYPE,jshort,Short)
+DEFINE_METHOD(VOID,void,Void)
 
 

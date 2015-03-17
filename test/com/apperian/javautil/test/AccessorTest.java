@@ -12,67 +12,39 @@ import com.apperian.javautil.UnsupportedTypeException;
 public class AccessorTest {
     
     @Test
-    public void invokeBoolean() throws NoSuchMethodException, UnsupportedTypeException {
+    public void invokeMethod() throws NoSuchMethodException, UnsupportedTypeException {
         Target t = new Target();
         assertEquals(t.returnBoolean(),Accessor.invokeMethod(t,"returnBoolean",new Object[0]));
-    }
-    
-    @Test
-    public void invokeByte() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t = new Target();
         assertEquals(t.returnByte(),Accessor.invokeMethod(t,"returnByte",new Object[0]));
-    }
-    
-    @Test
-    public void invokeChar() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t = new Target();
         assertEquals(t.returnChar(),Accessor.invokeMethod(t,"returnChar",new Object[0]));
-    }
-    
-    @Test
-    public void invokeDouble() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t = new Target();
         assertEquals(t.returnDouble(),Accessor.invokeMethod(t,"returnDouble",new Object[0]));
-    }
-    
-    @Test
-    public void invokeFloat() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t = new Target();
         assertEquals(t.returnFloat(),Accessor.invokeMethod(t,"returnFloat",new Object[0]));
-    }
-    
-    @Test
-    public void invokeInt() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t = new Target();
         assertEquals(t.returnInt(),Accessor.invokeMethod(t,"returnInt",new Object[0]));
-    }
-    
-    @Test
-    public void invokeLong() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t = new Target();
         assertEquals(t.returnLong(),Accessor.invokeMethod(t,"returnLong",new Object[0]));
-    }
-    
-    @Test
-    public void invokeObject() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t = new Target();
         assertEquals(t.returnObject(),Accessor.invokeMethod(t,"returnObject",new Object[0]));
-    }
-    
-    @Test
-    public void invokeShort() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t = new Target();
         assertEquals(t.returnShort(),Accessor.invokeMethod(t,"returnShort",new Object[0]));
+        
+        Accessor.invokeMethod(t,"returnVoid",new Object[0]);
+        assertEquals(t.instanceInt,t.instanceIntExpected);
     }
     
     @Test
-    public void invokeVoid() throws NoSuchMethodException, UnsupportedTypeException {
-        Target t1 = new Target();
-        Target t2 = new Target();
-        t1.returnVoid();
-        Accessor.invokeMethod(t2,"returnVoid",new Object[0]);
-        assertEquals(t1.mInt,t2.mInt);
+    public void invokeStaticMethod() throws NoSuchMethodException, UnsupportedTypeException {
+        assertEquals(Target.returnStaticBoolean(),Accessor.invokeMethod(Target.class,"returnStaticBoolean",new Object[0]));
+        assertEquals(Target.returnStaticByte(),Accessor.invokeMethod(Target.class,"returnStaticByte",new Object[0]));
+        assertEquals(Target.returnStaticChar(),Accessor.invokeMethod(Target.class,"returnStaticChar",new Object[0]));
+        assertEquals(Target.returnStaticDouble(),Accessor.invokeMethod(Target.class,"returnStaticDouble",new Object[0]));
+        assertEquals(Target.returnStaticFloat(),Accessor.invokeMethod(Target.class,"returnStaticFloat",new Object[0]));
+        assertEquals(Target.returnStaticInt(),Accessor.invokeMethod(Target.class,"returnStaticInt",new Object[0]));
+        assertEquals(Target.returnStaticLong(),Accessor.invokeMethod(Target.class,"returnStaticLong",new Object[0]));
+        assertEquals(Target.returnStaticObject(),Accessor.invokeMethod(Target.class,"returnStaticObject",new Object[0]));
+        assertEquals(Target.returnStaticShort(),Accessor.invokeMethod(Target.class,"returnStaticShort",new Object[0]));
+        
+        Target.returnStaticVoid();
+        Accessor.invokeMethod(Target.class,"returnStaticVoid",new Object[0]);
+        assertEquals(Target.staticInt,Target.staticIntExpected);
     }
+
     
     @Test(expected=NoSuchMethodException.class)
     public void testInvokeMethodNameOnly_negative() throws NoSuchMethodException, UnsupportedTypeException {

@@ -91,48 +91,29 @@ public class MethodsTest {
         method = Target.class.getMethod("voidVoid");
         assertEquals("()V",Methods.getMethodSignature(method));
         
-        method = Target.class.getMethod("allArgsVoid",
-                boolean.class,
-                byte.class,
-                char.class,
-                double.class,
-                float.class,
-                int.class,
-                long.class,
-                Target.class,
-                short.class,
-                int[].class,
-                Target[].class);
+        method = Target.class.getMethod("allArgsVoid", boolean.class, byte.class, char.class, double.class, float.class, int.class,
+                long.class, Target.class, short.class, int[].class, Target[].class);
         assertEquals("(ZBCDFIJLcom/apperian/javautil/test/Target;S[I[Lcom/apperian/javautil/test/Target;)V",Methods.getMethodSignature(method));
     }
     
     @Test
     public void testArgumentTypes() throws NoSuchMethodException, SecurityException {
         Method method;
-        method = Target.class.getMethod("allArgsVoid",
-                boolean.class,
-                byte.class,
-                char.class,
-                double.class,
-                float.class,
-                int.class,
-                long.class,
-                Target.class,
-                short.class,
-                int[].class,
-                Target[].class);
+        method = Target.class.getMethod("allArgsVoid", boolean.class, byte.class, char.class, double.class, float.class, int.class,
+                long.class, Target.class, short.class, int[].class, Target[].class);
 
         int[] argTypes = Methods.getArgTypes(method);
         
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[0]);
-        assertEquals(Primitives.TypeOffset.BOOLEAN, argTypes[1]);
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[2]);
-        assertEquals(Primitives.TypeOffset.INT, argTypes[3]);
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[4]);
-        assertEquals(Primitives.TypeOffset.FLOAT, argTypes[5]);
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[6]);
-        assertEquals(Primitives.TypeOffset.DOUBLE, argTypes[7]);
-        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[8]);
-        assertEquals(Primitives.TypeOffset.LONG, argTypes[9]);
+        assertEquals(Primitives.TypeOffset.BOOLEAN, argTypes[0]);
+        assertEquals(Primitives.TypeOffset.BYTE, argTypes[1]);
+        assertEquals(Primitives.TypeOffset.CHAR, argTypes[2]);
+        assertEquals(Primitives.TypeOffset.DOUBLE, argTypes[3]);
+        assertEquals(Primitives.TypeOffset.FLOAT, argTypes[4]);
+        assertEquals(Primitives.TypeOffset.INT, argTypes[5]);
+        assertEquals(Primitives.TypeOffset.LONG, argTypes[6]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[7]);
+        assertEquals(Primitives.TypeOffset.SHORT, argTypes[8]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[9]);
+        assertEquals(Primitives.TypeOffset.OBJECT, argTypes[10]);
     }
 }
