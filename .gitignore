@@ -1,2 +1,5 @@
-build
 accessor_jni.h
+classes
+libs
+obj
+docs

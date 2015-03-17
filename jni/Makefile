@@ -6,9 +6,9 @@
 CC=gcc
 JDK=/usr/java/jdk
 
-SRC      =  jni
-BUILD    =  build
-OUT      =  $(BUILD)/lib
+SRC      =  $(abspath $(lastword $(MAKEFILE_LIST))/..)
+BUILD    =  $(abspath $(SRC)/..)
+OUT      =  $(BUILD)/libs
 OBJ      =  $(BUILD)/obj
 CFLAGS   =  -g -c -Wall -std=c99 -fPIC
 INCLUDES =  -I$(JDK)/include -I$(JDK)/include/linux
@@ -32,7 +32,7 @@ $(OBJECTS): $(OBJ)/%.o : $(SRC)/%.c | $(OBJ)/.d
 
 clean:
 	$(RM) $(OUT)/$(TARGET)
-	$(RM) -r $(OBJ)
+	$(RM) $(OBJ)/*.o
 	
 #
 # EOF: Makefile

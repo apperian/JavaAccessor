@@ -1,28 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="accessor" default="build" basedir=".">
-    
-  <property name="src.dir"     value="src"/>
-  <property name="jni.dir"     value="jni"/>
-  <property name="build.dir"   value="build"/>
-  <property name="classes.dir" value="${build.dir}/classes"/>
-  <property name="jar.dir"     value="${build.dir}/lib"/>
-  <property name="doc.dir"     value="${build.dir}/doc"/>
+  
+    <property environment="env"/>
+	<property name="src.dir"     value="src"/>
+	<property name="jni.dir"     value="jni"/>
+	<property name="build.dir"   value="build"/>
+	<property name="classes.dir" value="classes"/>
+	<property name="libs.dir"    value="libs"/>
+	<property name="doc.dir"     value="docs"/>
+	<property name="ndk.dir"     value="${env.NDK_ROOT}"/>
   
   <target name="build" depends="build-jar, build-jni, javadoc"/>
   
+  <target name="clean" depends="clean-jar, clean-jni, clean-javadoc"/>
+  
   <target name="build-jar" depends="compile">
-    <javah class="com.apperian.javautil.AccessorNative" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}_jni.h"/>
-    <mkdir dir="${jar.dir}"/>
-    <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
+      <javah class="com.apperian.javautil.AccessorNative" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}_jni.h"/>
+      <mkdir dir="${libs.dir}"/>
+      <jar destfile="${libs.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
+  </target>
+  
+  <target name="clean-jar">
+      <delete file="${libs.dir}/${ant.project.name}.jar"/>
   </target>
   
   <target name="compile">
-    <mkdir dir="${classes.dir}"/>
-    <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+      <mkdir dir="${classes.dir}"/>
+      <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+  </target>
+  
+  <target name="clean-compile">
+      <delete dir="${classes.dir}"/>
   </target>
   
   <target name="build-jni">
-    <exec executable="make"/>
+      <exec executable="make">
+          <arg line="-f ${jni.dir}/Makefile"/>
+      </exec>
+  </target>
+  
+  <target name="clean-jni">
+      <exec executable="make">
+          <arg line="-f ${jni.dir}/Makefile clean"/>
+      </exec>
+  </target>
+  
+  <target name="build-android">
+      <exec executable="${ndk.dir}/ndk-build"/>
+  </target>
+  
+  <target name="clean-android">
+      <exec executable="${ndk.dir}/ndk-build">
+          <arg value="clean"/>
+      </exec>
   </target>
   
   <target name="javadoc">
@@ -33,8 +63,8 @@
       </javadoc>
   </target>
   
-  <target name="clean">
-    <delete dir="build"/>
+  <target name="clean-javadoc">
+      <delete dir="${doc.dir}"/>
   </target>
   
 </project>
