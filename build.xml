@@ -14,6 +14,10 @@
   
   <target name="clean" depends="clean-jar, clean-jni, clean-javadoc"/>
   
+  <target name="build-android" depends="build-jar, build-android-jni, javadoc"/>
+  
+  <target name="clean-android" depends="clean-jar, clean-android-jni, clean-javadoc"/>
+  
   <target name="build-jar" depends="compile">
       <javah class="com.apperian.javautil.AccessorNative" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}_jni.h"/>
       <mkdir dir="${libs.dir}"/>
@@ -45,11 +49,11 @@
       </exec>
   </target>
   
-  <target name="build-android">
+  <target name="build-android-jni">
       <exec executable="${ndk.dir}/ndk-build"/>
   </target>
   
-  <target name="clean-android">
+  <target name="clean-android-jni">
       <exec executable="${ndk.dir}/ndk-build">
           <arg value="clean"/>
       </exec>
