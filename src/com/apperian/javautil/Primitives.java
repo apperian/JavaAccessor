@@ -106,6 +106,35 @@ public final class Primitives {
     }
     
     /**
+     *  Retrieves the raw internal name for {@code cls}
+     * 
+     *  @param cls       The class to get the raw name for
+     *  @return          A {@link java.lang.String} representation of the
+     *                   raw internal name for {@code cls}
+     */
+    public static String getRawName(Class<?> cls) {
+        
+        StringBuilder rawName = new StringBuilder();
+        char rawType = getRawType(cls);
+        
+        if (rawType == RawType.OBJECT) {
+            String className = cls.getName();
+            
+            if (className.startsWith("[")) {
+                rawName.append(className.replace('.', '/'));
+            }
+            else {
+                rawName.append("L");
+                rawName.append(className.replace('.', '/'));
+                rawName.append(";");
+            }
+        } else {
+            rawName.append(rawType);
+        }
+        return rawName.toString();
+    }
+    
+    /**
      * Converts a Boolean object to a primitive boolean
      * 
      * @param o    Boolean object

@@ -12,8 +12,6 @@
 #define APPERIAN_SHORT     0x08
 #define APPERIAN_VOID      0x09
 
-jint JNI_OnLoad(JavaVM *vm, void *reserved);
-
 typedef struct {
     char       *class_name;
     jclass     class;

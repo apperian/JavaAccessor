@@ -1,5 +1,6 @@
 package com.apperian.javautil;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class UnsupportedTypeException extends Exception {
@@ -13,6 +14,14 @@ public class UnsupportedTypeException extends Exception {
         builder.append(method.getName());
         builder.append(" => ");
         builder.append(returnType.getName());
+    }
+    
+    UnsupportedTypeException(Field field, Class<?> type) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Unsupported type for field: ");
+        builder.append(field.getName());
+        builder.append(" => ");
+        builder.append(type.getName());
     }
     
     public String toString() {

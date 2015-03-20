@@ -2,6 +2,7 @@ package com.apperian.javautil;
 
 import com.apperian.javautil.Primitives.NativeType;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -91,7 +92,7 @@ public final class Accessor {
     }
     
     /**
-     * Calls method {@code method} on obj
+     * Calls {@code method} on {@code obj}
      * <p>
      * This will invoke {@code method} using {@code obj} as <i>this</i>, passing {@code args} as the arguments.
      * {@code obj} should be a {{@link java.lang.Class} if {@code method} is static
@@ -106,35 +107,96 @@ public final class Accessor {
     public static Object invokeMethod(Object obj, Method method, Object[] args) 
             throws UnsupportedTypeException 
     {
-        boolean isStatic = Modifier.isStatic(method.getModifiers());
-        String methodSignature = Methods.getSignature(method);
-        int[] methodArgTypes = Methods.getArgTypes(method);
-        Class<?> cls = method.getReturnType();
-        
-        switch(Primitives.getNativeType(cls)) {
-        case NativeType.BOOLEAN:
-            return AccessorNative.invokeBoolean(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.BYTE:
-            return AccessorNative.invokeByte(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.CHAR:
-            return AccessorNative.invokeChar(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.DOUBLE:
-            return AccessorNative.invokeDouble(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.FLOAT:
-            return AccessorNative.invokeFloat(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.INT:
-            return AccessorNative.invokeInt(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.LONG:
-            return AccessorNative.invokeLong(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.OBJECT:
-            return AccessorNative.invokeObject(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.SHORT:
-            return AccessorNative.invokeShort(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-        case NativeType.VOID:
-            AccessorNative.invokeVoid(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
-            return null;
-        default:
-            throw new UnsupportedTypeException(method,cls);
-        }
+        return Methods.invokeMethod(obj, method, args);
+    }
+    
+    /**
+     * Gets {@code fieldName} from {@code obj}
+     * <p>
+     * For instance fields, this will look up the class of {@code obj} and then lookup the field
+     * of the class with the given {@code fieldName}.
+     * If {@code obj} is an instance of {@link java.lang.Class}, then this will assume the field is static 
+     * and will search for the field on {@code obj} directly.
+     * 
+     * @param obj             The object to retrieve the field from
+     * @param fieldName       The name of the field to retrieve
+     * @return                Returns the return value of the field on obj
+     * 
+     * @throws UnsupportedTypeException
+     * @throws NoSuchFieldException 
+     */
+    public static Object getField(Object obj, String fieldName) 
+            throws UnsupportedTypeException, NoSuchFieldException  
+    {
+        Class<?> cls = obj instanceof Class ? 
+                (Class<?>)obj : 
+                obj.getClass();
+                
+        Field field = cls.getField(fieldName);
+        return getField(obj, field);
+    }
+    
+    /**
+     * Gets field {@code field} on obj
+     * <p>
+     * This will retrieve {@code field} using {@code obj} as <i>this</i>.
+     * {@code obj} should be a {{@link java.lang.Class} if {@code field} is static
+     * 
+     * @param obj             The object to retrieve the field from
+     * @param field           The Field object to retrieve
+     * @return                Returns the return value of the field on obj
+     * 
+     * @throws UnsupportedTypeException
+     */
+    public static Object getField(Object obj, Field field) 
+            throws UnsupportedTypeException 
+    {
+        return Fields.getField(obj, field);
+    }
+    
+    /**
+     * Sets {@code fieldName} on {@code obj} to {@code value}
+     * <p>
+     * For instance fields, this will look up the class of {@code obj} and then lookup the field
+     * of the class with the given {@code fieldName}.
+     * If {@code obj} is an instance of {@link java.lang.Class}, then this will assume the field is static 
+     * and will search for the field on {@code obj} directly.
+     * 
+     * @param obj             The object to retrieve the field from
+     * @param fieldName       The name of the field to retrieve
+     * @param value           The value to set
+     * 
+     * @throws UnsupportedTypeException
+     * @throws NoSuchFieldException
+     * @throws ClassCastException 
+     */
+    public static void setField(Object obj, String fieldName, Object value) 
+            throws UnsupportedTypeException, NoSuchFieldException, ClassCastException  
+    {
+        Class<?> cls = obj instanceof Class ? 
+                (Class<?>)obj : 
+                obj.getClass();
+                
+        Field field = cls.getField(fieldName);
+        setField(obj, field, value);
+    }
+    
+    /**
+     * Sets field {@code field} on {@code obj} to {@code value}
+     * <p>
+     * This will set {@code field} to {@code value} using {@code obj} as <i>this</i>.
+     * {@code obj} should be a {{@link java.lang.Class} if {@code field} is static
+     * 
+     * @param obj             The object to retrieve the field from
+     * @param field           The Field object to set
+     * @param value           The value to set
+     * 
+     * @throws UnsupportedTypeException
+     * @throws ClassCastException
+     */
+    public static void setField(Object obj, Field field, Object value) 
+            throws UnsupportedTypeException, ClassCastException
+    {
+        Fields.setField(obj, field, value);
     }
 }

@@ -7,6 +7,10 @@ public class Target {
     public static int staticInt           = 0;
     public static int staticIntExpected   = 1;
     
+    static class Inner {
+        
+    }
+    
     /*
      * return type functions
      */
@@ -61,6 +65,33 @@ public class Target {
     
     public void    allArgsVoid(boolean z, byte b, char c, double d, float f, int i,
             long j, Target o, short s, int[] ia, Target[] ta) {};
+            
+    /*
+     * Field types
+     */
+    public boolean booleanField       = (boolean)true;
+    public byte    byteField          = (byte)1;
+    public char    charField          = (char)1;
+    public double  doubleField        = (double)1;
+    public float   floatField         = (float)1.2;
+    public int     intField           = (int)1;
+    public long    longField          = (long)10L;
+    public Inner   objectField        = new Inner();
+    public short   shortField         = (short)1;
+    
+    /*
+     * Static Field types
+     */
+    public static boolean staticBooleanField       = (boolean)true;
+    public static byte    staticByteField          = (byte)1;
+    public static char    staticCharField          = (char)1;
+    public static double  staticDoubleField        = (double)1;
+    public static float   staticFloatField         = (float)1.2;
+    public static int     staticIntField           = (int)1;
+    public static long    staticLongField          = (long)10L;
+    public static Inner   staticObjectField        = new Inner();
+    public static short   staticShortField         = (short)1;
+    
             
     @Override
     public boolean equals(Object obj) {

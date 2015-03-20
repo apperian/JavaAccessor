@@ -10,13 +10,13 @@
 	<property name="doc.dir"     value="docs"/>
 	<property name="ndk.dir"     value="${env.NDK_ROOT}"/>
   
-  <target name="build" depends="build-jar, build-jni, javadoc"/>
+  <target name="build" depends="build-jar, build-jni"/>
   
-  <target name="clean" depends="clean-jar, clean-jni, clean-javadoc"/>
+  <target name="clean" depends="clean-jar, clean-jni"/>
   
-  <target name="build-android" depends="build-jar, build-android-jni, javadoc"/>
+  <target name="build-android" depends="build-jar, build-android-jni"/>
   
-  <target name="clean-android" depends="clean-jar, clean-android-jni, clean-javadoc"/>
+  <target name="clean-android" depends="clean-jar, clean-android-jni"/>
   
   <target name="build-jar" depends="compile">
       <javah class="com.apperian.javautil.AccessorNative" classpath="${classes.dir}" outputFile="${jni.dir}/${ant.project.name}_jni.h"/>
