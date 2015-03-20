@@ -28,7 +28,7 @@ $(OBJECTS): $(OBJ)/%.o : $(SRC)/%.c | $(OBJ)/.d
 
 %.d:
 	@mkdir -p $(dir $@)
-	@touch $@
+	@touch $(dir $@)
 
 clean:
 	$(RM) $(OUT)/$(TARGET)
