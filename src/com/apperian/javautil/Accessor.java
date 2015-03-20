@@ -70,7 +70,7 @@ public final class Accessor {
                 (Class<?>)obj : 
                 obj.getClass();
                 
-        Method[] methods = cls.getMethods();
+        Method[] methods = cls.getDeclaredMethods();
         Method method = null;
         
         for (Method m : methods) {
@@ -78,6 +78,18 @@ public final class Accessor {
             if (mName.equals(methodName)) {
                 method = m;
                 break;
+            }
+        }
+        
+        if (method == null) {
+            methods = cls.getMethods();
+            
+            for (Method m : methods) {
+                String mName = m.getName();
+                if (mName.equals(methodName)) {
+                    method = m;
+                    break;
+                }
             }
         }
         
@@ -131,8 +143,14 @@ public final class Accessor {
         Class<?> cls = obj instanceof Class ? 
                 (Class<?>)obj : 
                 obj.getClass();
-                
-        Field field = cls.getField(fieldName);
+        
+        Field field = null;
+        try {
+            field = cls.getDeclaredField(fieldName);
+        } catch(NoSuchFieldException e) {
+            field = cls.getField(fieldName);
+        }
+        
         return getField(obj, field);
     }
     

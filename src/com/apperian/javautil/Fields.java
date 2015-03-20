@@ -74,7 +74,7 @@ final class Fields {
         boolean isStatic = Modifier.isStatic(field.getModifiers());
         String fieldSignature = getSignature(field);
         Class<?> cls = field.getType();
-        System.out.println(cls.getName());
+        
         switch(Primitives.getNativeType(cls)) {
         case NativeType.BOOLEAN:
             AccessorNative.setBooleanField(obj, field.getName(), isStatic, fieldSignature, (boolean)value);
