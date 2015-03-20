@@ -24,7 +24,7 @@
       <jar destfile="${libs.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
   </target>
   
-  <target name="clean-jar">
+  <target name="clean-jar" depends="clean-compile">
       <delete file="${libs.dir}/${ant.project.name}.jar"/>
   </target>
   
