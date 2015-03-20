@@ -9,14 +9,14 @@ To build the jar file and native shared library run ```ant build```. To build fo
 
 Examples assume the following class is defined:
 ```java
-    class MyObject {
-        private int        intField = 5;
-        private static int staticIntField = 10;
-        
-        private String toIntString() {
-            return Integer.toString(intField);
-        }
+class MyObject {
+    private int        intField = 5;
+    private static int staticIntField = 10;
+    
+    private String toIntString() {
+        return Integer.toString(intField);
     }
+}
 ```
 
 An example of calling a method on a Java class:
