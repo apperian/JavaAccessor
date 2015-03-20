@@ -1,5 +1,6 @@
 # JavaAccessor
 Library to easily access all private and public methods and fields on a Java class.
+Check out the [docs](http://apperian.github.io/JavaAccessor/)
 
 # Building
 
