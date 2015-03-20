@@ -2,6 +2,8 @@
 Library to easily access all private, public, and protected methods and fields on a Java (or Android) class.
 Check out the [docs](http://apperian.github.io/JavaAccessor/).
 
+**WARNING**: This is a library for Java / Android programmers that have very specific use cases (instrumentation, mocking, etc.) and not meant for your typical programming situation. If you cannot access a private method or field and need to, **you should refactor your code and class structures for proper inheritance, polymorphism, etc. to enable your access, *NOT* use this library**. This library is meant for niche scenarios where you truly do want to interact with fields and methods the programmer marked as inaccessible.
+
 # Building
 
 To build the jar file and native shared library run ```ant build```. To build for Android, run ```ant build-android``` (you must have ```ndk-build``` in your PATH). The binaries can be found in the libs directory.
