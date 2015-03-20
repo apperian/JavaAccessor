@@ -1,15 +1,66 @@
 package com.apperian.javautil;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import com.apperian.javautil.Primitives.NativeType;
 
 /** Provides methods for retrieving information about
- *  a Class or Method object.
+ *  a Method object.
  * 
  * @author   James Seibel
  * @author   Kevin LaFlamme
  * 
  */
-public final class Methods {
+final class Methods {
+    
+    /**
+     * Calls {@code method} on {@code obj}
+     * <p>
+     * This will invoke {@code method} using {@code obj} as <i>this</i>, passing {@code args} as the arguments.
+     * {@code obj} should be a {{@link java.lang.Class} if {@code method} is static
+     * 
+     * @param obj             The object to invoke the method on
+     * @param method          The Method object to invoke
+     * @param args            An array of arguments to pass to the method
+     * @return                Returns the return value of the invoked method
+     * 
+     * @throws UnsupportedTypeException
+     */
+    static Object invokeMethod(Object obj, Method method, Object[] args) 
+            throws UnsupportedTypeException 
+    {
+        boolean isStatic = Modifier.isStatic(method.getModifiers());
+        String methodSignature = getSignature(method);
+        int[] methodArgTypes = getArgTypes(method);
+        Class<?> cls = method.getReturnType();
+        
+        switch(Primitives.getNativeType(cls)) {
+        case NativeType.BOOLEAN:
+            return AccessorNative.invokeBoolean(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.BYTE:
+            return AccessorNative.invokeByte(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.CHAR:
+            return AccessorNative.invokeChar(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.DOUBLE:
+            return AccessorNative.invokeDouble(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.FLOAT:
+            return AccessorNative.invokeFloat(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.INT:
+            return AccessorNative.invokeInt(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.LONG:
+            return AccessorNative.invokeLong(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.OBJECT:
+            return AccessorNative.invokeObject(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.SHORT:
+            return AccessorNative.invokeShort(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+        case NativeType.VOID:
+            AccessorNative.invokeVoid(obj, method.getName(), isStatic, methodSignature, methodArgTypes, args);
+            return null;
+        default:
+            throw new UnsupportedTypeException(method,cls);
+        }
+    }
     
     /**
      * Gets the method signature for a particular Method
@@ -27,14 +78,14 @@ public final class Methods {
         
         // add parameter methods
         for (Class<?> paramClass : paramClasses) {
-            builder.append(getRawName(paramClass));
+            builder.append(Primitives.getRawName(paramClass));
         }
         
         builder.append(")");
         
         // add return type
         Class<?> returnType = method.getReturnType();
-        builder.append(getRawName(returnType));
+        builder.append(Primitives.getRawName(returnType));
         
         return builder.toString();
     }
@@ -51,48 +102,8 @@ public final class Methods {
         int[] paramTypes = new int[paramClasses.length];
         
         for (int i = 0; i < paramTypes.length; i++) {
-            paramTypes[i] = getArgType(paramClasses[i]);
+            paramTypes[i] = Primitives.getNativeType(paramClasses[i]);
         }
         return paramTypes;
-    }
-    
-    /**
-     *  Retrieves the raw internal name for {@code cls}
-     * 
-     *  @param cls       The class to get the raw name for
-     *  @return          A {@link java.lang.String} representation of the
-     *                   raw internal name for {@code cls}
-     */
-    private static String getRawName(Class<?> cls) {
-        
-        StringBuilder rawName = new StringBuilder();
-        char rawType = Primitives.getRawType(cls);
-        
-        if (rawType == Primitives.RawType.OBJECT) {
-            String className = cls.getName();
-            
-            if (className.startsWith("[")) {
-                rawName.append(className.replace('.', '/'));
-            }
-            else {
-                rawName.append("L");
-                rawName.append(className.replace('.', '/'));
-                rawName.append(";");
-            }
-        } else {
-            rawName.append(rawType);
-        }
-        return rawName.toString();
-    }
-    
-    /**
-     *  Retrieves the native type for {@code cls}
-     *  
-     *  @param cls       The class to get the arg type for
-     *  @return          The internal representation for the arg
-     *                   type for {@code cls}
-     */
-    private static int getArgType(Class<?> cls) {
-        return Primitives.getNativeType(cls);
     }
 }

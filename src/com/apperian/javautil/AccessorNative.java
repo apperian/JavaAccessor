@@ -33,4 +33,24 @@ final class AccessorNative {
     static native Object   invokeObject(Object obj, String methodName, boolean isStatic, String methodSig, int[] argTypes, Object[] args);
     static native short    invokeShort(Object obj, String methodName, boolean isStatic, String methodSig, int[] argTypes, Object[] args);
     static native void     invokeVoid(Object obj, String methodName, boolean isStatic, String methodSig, int[] argTypes, Object[] args);
+    
+    static native boolean  getBooleanField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    static native byte     getByteField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    static native char     getCharField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    static native double   getDoubleField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    static native int      getIntField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    static native float    getFloatField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    static native long     getLongField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    static native Object   getObjectField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    static native short    getShortField(Object obj, String fieldName, boolean isStatic, String fieldSig);
+    
+    static native void     setBooleanField(Object obj, String fieldName, boolean isStatic, String fieldSig, boolean z);
+    static native void     setByteField(Object obj, String fieldName, boolean isStatic, String fieldSig, byte b);
+    static native void     setCharField(Object obj, String fieldName, boolean isStatic, String fieldSig, char c);
+    static native void     setDoubleField(Object obj, String fieldName, boolean isStatic, String fieldSig, double d);
+    static native void     setIntField(Object obj, String fieldName, boolean isStatic, String fieldSig, int i);
+    static native void     setFloatField(Object obj, String fieldName, boolean isStatic, String fieldSig, float f);
+    static native void     setLongField(Object obj, String fieldName, boolean isStatic, String fieldSig, long l);
+    static native void     setObjectField(Object obj, String fieldName, boolean isStatic, String fieldSig, Object o);
+    static native void     setShortField(Object obj, String fieldName, boolean isStatic, String fieldSig, short s);
 }
