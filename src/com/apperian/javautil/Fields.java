@@ -114,7 +114,7 @@ final class Fields {
      * This method returns the internal method signature for a Method object.
      * This signature can be used to retrieve the jmethodID via JNI 
      * 
-     * @param method      The Method object used to retrieve the signature
+     * @param field       The Field object used to retrieve the signature
      * @return            A {@link java.lang.String} representing the method signature
      */
     static String getSignature(Field field) {
